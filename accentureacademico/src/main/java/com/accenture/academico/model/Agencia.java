@@ -133,12 +133,5 @@ public class Agencia implements Serializable{
 		} else if (!idAgencia.equals(other.idAgencia))
 			return false;
 		return true;
-	}
-	
-	public List<ContaDigital> listarContas(){
-		return getContas();
-	}
-		
-	
-
+	}		
 }

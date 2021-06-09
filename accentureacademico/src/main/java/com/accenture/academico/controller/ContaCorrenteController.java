@@ -15,14 +15,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import com.accenture.academico.model.ContaDigital;
-import com.accenture.academico.service.ContaCorrenteService;
+import com.accenture.academico.service.ContaDigitalService;
 
 @RestController //recebe requisições restful
 @RequestMapping(value = "/contacorrente")
 public class ContaCorrenteController {
 	
 	@Autowired
-	private ContaCorrenteService contaCorrenteService;
+	private ContaDigitalService contaCorrenteService;
 	
 	//MÉTODO PARA BUSCAR TODAS AS CONTAS CORRENTES
 	@GetMapping("/")
