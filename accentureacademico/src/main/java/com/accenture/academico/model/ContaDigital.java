@@ -21,9 +21,7 @@ import javax.persistence.OneToOne;
 public class ContaDigital implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private static final double percentualRendimentoMes = 1.015;
 	private static final double valorSaqueMinimo = 20;
-	private static final int periodoRendimento = 30;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,26 +41,11 @@ public class ContaDigital implements Serializable{
 	@JoinColumn(name="cliente_id")
 	private Cliente cliente;
 	
-	@OneToMany(mappedBy = "operacao")	
+	@OneToMany
+	@JoinColumn(name = "operacao_id")
 	private List<Operacao> operacoes = new ArrayList<Operacao>();
 
 	
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public static double getPercentualrendimentomes() {
-		return percentualRendimentoMes;
-	}
-
-	public double getValorsaqueminimo() {
-		return valorSaqueMinimo;
-	}
-
-	public static int getPeriodorendimento() {
-		return periodoRendimento;
-	}
-
 	public Date getDataCriacao() {
 		return dataCriacao;
 	}
@@ -136,5 +119,117 @@ public class ContaDigital implements Serializable{
 			return false;
 		return true;
 	}
+	
+	//realiza o saque da conta e retorna true se a operaçao for bem sucedida
+		public boolean sacar(double valor) {
+			try {
+				if(valor >= valorSaqueMinimo && valor < getContaSaldo()) {
+					setContaSaldo(getContaSaldo() - valor);
+					Date today = Calendar.getInstance().getTime();
+					Operacao operacao = new Operacao(today, TipoOperacao.SAQUE, valor);
+					this.operacoes.add(operacao);
+					return true;
+				}else {
+					return false;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return false;
+			
+		}
 		
+		public boolean debitar(double valor) {
+			try {
+				if(valor < getContaSaldo()) {
+					setContaSaldo(getContaSaldo() - valor);
+					return true;
+				}else {
+					return false;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return false;
+			
+		}	
+		
+		//realiza o deposito e retorna true se for bem sucedida
+		public void depositar(double valor) {
+			try {
+				setContaSaldo(getContaSaldo() + valor);
+				Date today = Calendar.getInstance().getTime();
+				Operacao operacao = new Operacao(today, TipoOperacao.DEPOSITO, valor);
+				this.operacoes.add(operacao);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		//realiza o saque de uma conta e deposita numa conta de destino
+		public boolean transferir(ContaDigital contaDestino, double valor) {
+			try {
+				if(debitar(valor)) {
+					contaDestino.depositar(valor);
+					Date today = Calendar.getInstance().getTime();
+					Operacao operacao = new Operacao(today, TipoOperacao.TRANSFERENCIA, valor);
+					this.operacoes.add(operacao);
+					return true;
+				}else {
+					return false;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return false;
+		}
+		
+		public boolean pagamento(double valor) {
+			try {
+				if(debitar(valor)) {
+					Date today = Calendar.getInstance().getTime();
+					Operacao operacao = new Operacao(today, TipoOperacao.PAGAMENTO, valor);
+					this.operacoes.add(operacao);
+					return true;
+				}else {
+					return false;
+				}	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return false;		
+		}
+		
+		public List<Operacao> extrato() {
+			try {
+				return getOperacoes();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return new ArrayList<Operacao>();
+		}
+		
+		public List<Operacao> extratoTempo(Date dataInicio) throws ParseException {
+			SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy"); 
+			ArrayList<Operacao> operacoesExtrato = new ArrayList<Operacao>();
+			
+			try {
+				
+				for (Operacao operacao : operacoes) {
+					
+					Date dataOperacao = formatador.parse(formatador.format(operacao.getDataHoraOperacao()));
+					Date dataInicioExtrato = formatador.parse(formatador.format(dataInicio));
+					
+					if(dataOperacao.compareTo(dataInicioExtrato) >= 0)
+						operacoesExtrato.add(operacao);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			return operacoesExtrato;
+		}
 }

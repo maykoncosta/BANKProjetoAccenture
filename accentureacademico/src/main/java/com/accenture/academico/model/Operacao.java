@@ -33,7 +33,7 @@ public class Operacao {
 	
 	@NotNull()
 	@ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "fk_conta_id", foreignKey = @ForeignKey(name = "fk_conta"), referencedColumnName = "idConta")
+    @JoinColumn(name = "conta_id")
 	private ContaDigital conta;
 
 	public Long getIdOperacao() {

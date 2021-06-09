@@ -33,7 +33,8 @@ public class Analista {
 	@Column(name="telefoneAnalista")
 	private int telefoneAnalista;
 	
-	@OneToMany(mappedBy = "analista")	
+	@OneToMany
+	@JoinColumn(name="cliente_id")
 	private List<Cliente> cliente = new ArrayList<Cliente>();
 	
 	@Column(name="agencia")

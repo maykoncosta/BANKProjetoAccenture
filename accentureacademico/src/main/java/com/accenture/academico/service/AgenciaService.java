@@ -49,13 +49,9 @@ public class AgenciaService {
 	public Agencia buscarAgenciaID(Long id){
 		Optional<Agencia> agencia = agenciaRepository.findById(id);
 		return agencia.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Agencia não encontrada"));
+						
+		
 	}
      
-	public List<ContaDigital> listarContas(Long idAgencia){
-		
-		Agencia agencia;
-		agencia = buscarAgenciaID(idAgencia);
-		
-		return agencia.getContas();
-	}
+
 }

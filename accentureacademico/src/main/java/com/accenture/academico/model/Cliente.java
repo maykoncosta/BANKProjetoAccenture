@@ -49,7 +49,7 @@ public class Cliente implements Serializable {
 	
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name="id_agencia")
+	@JoinColumn(name="agencia_id")
 	private Agencia agencia;
 
 	

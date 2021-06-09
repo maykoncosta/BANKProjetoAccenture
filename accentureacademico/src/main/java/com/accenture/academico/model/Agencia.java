@@ -46,7 +46,8 @@ public class Agencia implements Serializable{
 	@Column(name="dataAbertura")
 	private Date dataAbertura;
 	
-	@OneToMany(mappedBy = "agencia")	
+	@OneToMany
+	@JoinColumn(name = "conta_id")
 	private List<ContaDigital> contas = new ArrayList<ContaDigital>();
 	
 	
@@ -133,5 +134,12 @@ public class Agencia implements Serializable{
 		} else if (!idAgencia.equals(other.idAgencia))
 			return false;
 		return true;
-	}		
+	}
+	
+	public List<ContaDigital> listarContas(){
+		return getContas();
+	}
+		
+	
+
 }
